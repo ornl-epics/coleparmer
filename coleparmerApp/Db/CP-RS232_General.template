@@ -1,0 +1,261 @@
+####  Macro Definitions  ####
+# (bl)	- Beam Line
+# (ta)	- Target Area
+# (dn)	- Device Name
+
+# Identification and Startup PVs
+# Read firmware version
+record(stringin, "$(bl):$(ta):$(dn):FWVersion")
+{
+	field(DESC,	"Read Firmware Version")
+	field(PINI,	"YES")
+	field(SCAN,	"10 second")
+	field(DTYP,	"stream")
+	field(INP,	"@cp-rs232.proto GetFirmware cp232")
+	info(archive,   "Monitor, 00:01:00, VAL")
+	info(autosaveFields, "VAL")
+}
+
+# Read and Set Temperature Units 0==C, 1==F
+record(bi, "$(bl):$(ta):$(dn):GetUnits")
+{
+	field(DESC,	"Get Temp Units, F/C")
+	field(PINI,	"YES")
+	field(DTYP,	"stream")
+	field(SCAN,	"5 second")
+	field(ZNAM,	"C")
+	field(ONAM,	"F")
+	field(INP,	"@cp-rs232.proto GetUnits cp232")
+}
+
+record(bo, "$(bl):$(ta):$(dn):SetUnits")
+{
+	field(DESC,	"Set Temp Units, F/C")
+	field(SCAN,	"10 second")
+	field(DTYP,	"stream")
+	field(ZNAM,	"C")
+	field(ONAM,	"F")
+	field(OUT,	"@cp-rs232.proto SetUnits cp232")
+	info(archive,   "Monitor, 00:01:00, VAL")
+	info(autosaveFields, "VAL")
+}
+
+# Read and Set operating mode, 0==Standby, 1==On
+record(bi, "$(bl):$(ta):$(dn):GetOnStandby")
+{
+	field(DESC,	"Get oper stat, On/StdBy")
+	field(PINI,	"YES")
+	field(DTYP,	"stream")
+	field(SCAN,	"5 second")
+	field(ZNAM,	"Standby")
+	field(ONAM,	"On")
+	field(INP,	"@cp-rs232.proto GetOnStandby cp232")
+	field(FLNK,	"$(bl):$(ta):$(dn):GetStatus")
+}
+
+record(bo, "$(bl):$(ta):$(dn):SetOnStandby")
+{
+	field(DESC,	"Set oper stat, On/StdBy")
+	field(SCAN,	"Passive")
+	field(PINI,	"YES")
+	field(DTYP,	"stream")
+	field(ZNAM,	"Standby")
+	field(ONAM,	"On")
+	field(OUT,	"@cp-rs232.proto SetOnStandby($(bl):$(ta):$(dn)) cp232")
+	field(FLNK,	"$(bl):$(ta):$(dn):GetOnStandby")
+	info(archive,   "Monitor, 00:01:00, VAL")
+	info(autosaveFields, "VAL")
+}
+
+# Read and Set mode at power on, 0==Standby, 1==Running
+record(bi, "$(bl):$(ta):$(dn):GetRestartStandby")
+{
+	field(DESC,	"Get start mode, On/Run")
+	field(PINI,	"YES")
+	field(DTYP,	"stream")
+	field(SCAN,	"5 second")
+	field(ZNAM,	"Standby")
+	field(ONAM,	"Running")
+	field(INP,	"@cp-rs232.proto GetRestartStandby cp232")
+}
+
+record(bo, "$(bl):$(ta):$(dn):SetRestartStandby")
+{
+	field(DESC,	"Set start mode, On/Run")
+	field(SCAN,	"10 second")
+	field(DTYP,	"stream")
+	field(ZNAM,	"Standby")
+	field(ONAM,	"Running")
+	field(OUT,	"@cp-rs232.proto SetRestartStandby cp232")
+	info(archive,   "Monitor, 00:01:00, VAL")
+	info(autosaveFields, "VAL")
+}
+
+# Read and Set Temperature
+record(ai, "$(bl):$(ta):$(dn):GetTemp")
+{
+	field(DESC,	"Get Set Pt Temp")
+	field(PINI,	"YES")
+	field(DTYP,	"stream")
+	field(SCAN,	"5 second")
+	field(EGU,	" C")
+	field(PREC,	"2")
+	field(LOPR,	"-30")
+	field(HOPR,	"200")
+	field(INP,	"@cp-rs232.proto GetTemp cp232")
+}
+
+record(ao, "$(bl):$(ta):$(dn):SetTemp")
+{
+	field(DESC,	"Set Temperature")
+	field(SCAN,	"2 second")
+	field(PINI,	"YES")
+	field(DTYP,	"stream")
+	field(EGU,	" C")
+	field(PREC,	"2")
+	field(DRVL,	"-30")
+	field(DRVH,	"200")
+	field(LOPR,	"-30")
+	field(HOPR,	"200")
+	field(OUT,	"@cp-rs232.proto SetTemp cp232")
+	field(FLNK,	"$(bl):$(ta):$(dn):GetActTemp")
+	info(archive,   "Monitor, 00:01:00, VAL")
+	info(autosaveFields, "VAL")
+}
+
+record(ai, "$(bl):$(ta):$(dn):GetActTemp")
+{
+	field(DESC,	"Get Temperature")
+	field(PINI,	"YES")
+	field(DTYP,	"stream")
+	field(SCAN,	"1 second")
+	field(EGU,	" C")
+	field(PREC,	"2")
+	field(LOPR,	"-30")
+	field(HOPR,	"200")
+	field(INP,	"@cp-rs232.proto GetActTemp cp232")
+}
+
+# Read and Set Pump Speed, range is 5 to 100 in increments of 5
+record(ai, "$(bl):$(ta):$(dn):GetPumpSpd")
+{
+	field(DESC,	"Get Pump Speed")
+	field(PINI,	"YES")
+	field(DTYP,	"stream")
+	field(SCAN,	"5 second")
+	field(EGU,	"LPM")
+	field(LOPR,	"5")
+	field(HOPR,	"100")
+	field(INP,	"@cp-rs232.proto GetPumpSpd cp232")
+}
+
+record(ao, "$(bl):$(ta):$(dn):SetPumpSpd")
+{
+	field(DESC,	"Set Pump Speed")
+	field(SCAN,	"2 second")
+	field(DTYP,	"stream")
+	field(PINI,	"YES")
+	field(EGU,	"LPM")
+	field(DRVL,	"5")
+	field(DRVH,	"100")
+	field(LOPR,	"5")
+	field(HOPR,	"100")
+	field(OUT,	"@cp-rs232.proto SetPumpSpd cp232")
+	field(FLNK,	"$(bl):$(ta):$(dn):GetPumpSpd")
+	info(archive,   "Monitor, 00:01:00, VAL")
+	info(autosaveFields, "VAL")
+}
+
+# Read and Set high and low alarm values (30-202) and (-52-20)
+record(ai, "$(bl):$(ta):$(dn):GetHighAlarm")
+{
+	field(DESC,	"Get High Alarm")
+	field(PINI,	"YES")
+	field(DTYP,	"stream")
+	field(SCAN,	"5 second")
+	field(EGU,	" C")
+	field(LOPR,	"30")
+	field(HOPR,	"202")
+	field(INP,	"@cp-rs232.proto GetHighAlarm cp232")
+}
+
+record(ao, "$(bl):$(ta):$(dn):SetHighAlarm")
+{
+	field(DESC,	"Set High Alarm")
+	field(SCAN,	"5 second")
+	field(DTYP,	"stream")
+	field(EGU,	" C")
+	field(DRVL,	"30")
+	field(DRVH,	"202")
+	field(LOPR,	"30")
+	field(HOPR,	"202")
+	field(OUT,	"@cp-rs232.proto SetHighAlarm cp232")
+	info(archive,   "Monitor, 00:01:00, VAL")
+	info(autosaveFields, "VAL")
+}
+
+record(ai, "$(bl):$(ta):$(dn):GetLowAlarm")
+{
+	field(DESC,	"Get Low Alarm")
+	field(PINI,	"YES")
+	field(DTYP,	"stream")
+	field(SCAN,	"5 second")
+	field(EGU,	" C")
+	field(LOPR,	"-52")
+	field(HOPR,	"20")
+	field(INP,	"@cp-rs232.proto GetLowAlarm cp232")
+}
+
+record(ao, "$(bl):$(ta):$(dn):SetLowAlarm")
+{
+	field(DESC,	"Set Low Alarm")
+	field(SCAN,	"5 second")
+	field(DTYP,	"stream")
+	field(EGU,	" C")
+	field(DRVL,	"-52")
+	field(DRVH,	"20")
+	field(LOPR,	"-52")
+	field(HOPR,	"20")
+	field(OUT,	"@cp-rs232.proto SetLowAlarm cp232")
+	field(FLNK,	"$(bl):$(ta):$(dn):GetLowAlarm")
+	info(autosaveFields, "VAL")
+}
+
+# Read Alarm Status
+record(bi, "$(bl):$(ta):$(dn):GetAlarmStat")
+{
+	field(DESC,	"Get Alarm Status")
+	field(PINI,	"YES")
+	field(DTYP,	"stream")
+	field(SCAN,	"2 second")
+	field(ZNAM,	"Okay")
+	field(ONAM,	"Fault")
+	field(FLNK,	"$(bl):$(ta):$(dn):GetStatus")
+	field(INP,	"@cp-rs232.proto GetAlarmStat cp232")
+}
+
+# Combine Alarm Status and On/Off State
+record(mbbi, "$(bl):$(ta):$(dn):Status")
+{
+	field(DESC,	"System status")
+	field(PINI,	"YES")
+	field(VAL,	"0")
+	field(ZRVL,	"0")
+	field(ZRST,	"Off")
+	field(ONVL,	"1")
+	field(ONST,	"On")
+	field(TWVL,	"2")
+	field(TWST,	"Fault")
+	field(SCAN,	"2 second")
+	field(INP,	"$(bl):$(ta):$(dn):GetStatus PP MSS")
+}
+
+record(calc, "$(bl):$(ta):$(dn):GetStatus")
+{
+	field(DESC,	"Calc System Status")
+	field(INPA,	"$(bl):$(ta):$(dn):GetAlarmStat NPP NMS")
+	field(INPB,	"$(bl):$(ta):$(dn):GetOnStandby NPP NMS")
+	field(CALC,	"(A=1)?2:B")
+	field(HIGH,	"2")
+	field(HSV,	"MAJOR")
+}

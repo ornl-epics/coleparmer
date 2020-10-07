@@ -1,0 +1,5 @@
+This IOC provides EPICS support for the Cole-Parmer PolyStat AD28R-30. Even 
+though there is an ethernet interface on the piece of equipment, I was not 
+able to determine how to access the interface. I moved to RS232 communications
+to complete this project.
+
