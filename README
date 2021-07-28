@@ -1,0 +1,8 @@
+This IOC provides EPICS support for the Cole-Parmer PolyStat AD28R-30.
+
+Device access is through a serial to  ethernet communications device (MOXA).
+
+This system requires the following EPICS packages:
+   ASYN
+   STREAMDEVICE
+   BUSY

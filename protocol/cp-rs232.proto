@@ -1,0 +1,132 @@
+#
+# Cole Parmer RS232 Interface stream device protocol file
+#
+
+Terminator	= CR;
+LockTimeout	= 5000;
+ReplyTimeout	= 200;
+WriteTimeout	= 200;
+extrainput	= Ignore;
+InTerminator	= CR;
+
+debug {
+    ExtraInput = Ignore;
+    out "%s";
+    in "%39c";
+}
+
+### System Inititialization Commands
+
+# Read the firmware version and setup serial communications
+GetFirmware {
+    out "RB";
+    in "%s";
+    @init {
+        out "RB";
+        in "%s";
+    };
+}
+
+### System Setup and Status Commands
+GetUnits {
+    out "RU";
+    wait 200;
+    in "%{C|F}";
+}
+
+SetUnits {
+    out "SU%{C|F}";
+    wait 200;
+    in "%s"; # ! == valid command, ? == invalid
+}
+
+# Set system to On or Standby
+# 0 == Standby, 1 == Running
+SetOnStandby {
+    out "SO%d";
+    wait 4000;
+    in "%*s";
+}
+
+GetOnStandby {
+    out "RO";
+    wait 100;
+    in "%d";
+}
+
+# System starts up On(1) or go into Standby(0)
+SetRestartStandby {
+    out "SW%{0|1}";
+    wait 100;
+    in "%s"; # ! == valid command, ? == invalid
+}
+
+GetRestartStandby {
+    out "RW";
+    wait 100;
+    in "%{0|1}"; # ! == valid command, ? == invalid
+}
+
+# Set and read bath setpoint temperature
+SetTemp {
+    out "SS%.2f";
+    wait 200;
+    in "%*s"; # ! == valid command, ? == invalid
+}
+
+GetTemp {
+    out "RS";
+    wait 200;
+    in "%f";
+}
+
+GetActTemp {
+    out "RT";
+    wait 200;
+    in "%f";
+}
+
+# Set pump speed - 5->100
+SetPumpSpd {
+    out "SM%i";
+    wait 100;
+    in "%*s"; # ! == valid command, ? == invalid
+}
+
+GetPumpSpd {
+    out "RM";
+    wait 100;
+    in "%i";
+}
+
+# Set and Read high and low alarms
+SetHighAlarm {
+    out "SH%i";
+    wait 250;
+    in "%*s"; # ! == valid command, ? == invalid
+}
+
+GetHighAlarm {
+    out "RH";
+    wait 100;
+    in "%i";
+}
+
+SetLowAlarm {
+    out "SL%i";
+    wait 250;
+    in "%*s"; # ! == valid command, ? == invalid
+}
+
+GetLowAlarm {
+    out "RL";
+    wait 100;
+    in "%i";
+}
+
+# Read Alarm Status, 0==None, 1==Alarm detected
+GetAlarmStat {
+    out "RF";
+    wait 250;
+    in "%{0|1}";
+}
