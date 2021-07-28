@@ -23,14 +23,17 @@
 # other than EPICS_BASE:
 #RULES = $(MODULES)/build-rules
 
-ASYN=/home/controls/epics/asyn/master
-STREAMDEVICE=/home/controls/epics/StreamDevice/master
+ASYN=/home/controls/prod/epics/asyn/rel4-35_20190418
+AUTOSAVE=/home/controls/prod/epics/autosave/rel5-5_20170606
+STREAMDEVICE=/home/controls/prod/epics/StreamDevice/rel2.8.8_SNS1_20190521
+BUSY=/home/controls/prod/epics/busy/rel1-6_20190520
+CP_RS232=/home/controls/prod/epics/coleparmer/rel1.0_20201203
+
+# EPICS_BASE should appear last so earlier modules can override stuff:
+EPICS_BASE=     /home/controls/prod/epics/base/rel3.14.12.6_20170606
 
 # These allow developers to override the RELEASE variable settings
 # without having to modify the configure/RELEASE file itself.
 #-include $(TOP)/../RELEASE.local
 #-include $(TOP)/configure/RELEASE.local
-
-# EPICS_BASE should appear last so earlier modules can override stuff:
-EPICS_BASE = /home/controls/epics/base/master
 

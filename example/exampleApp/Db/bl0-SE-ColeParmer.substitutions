@@ -1,0 +1,5 @@
+file CP-RS232_General.template
+{pattern
+	{ bl, ta, dn}
+	{BL0F, SE, CP}
+}
